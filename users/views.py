@@ -72,12 +72,13 @@ class RegistrationAPIView(CreateAPIView):
                 user=user,
                 code=code
             )
+            from users.tasks import send_otp_mail
+            send_otp_mail.delay(code, email, user.id)
 
         return Response(
             status=status.HTTP_201_CREATED,
             data={
-                'user_id': user.id,
-                'confirmation_code': code
+                'message': "Ожидайте код на почту",
             }
         )
 
